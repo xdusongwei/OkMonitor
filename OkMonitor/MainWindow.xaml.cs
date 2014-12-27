@@ -55,20 +55,77 @@ namespace OkMonitor
             BindingOperations.SetBinding(tbPrice, TextBlock.TextProperty, binding);
             quoteTimer.Elapsed += (qsender, qe) => 
             {
+                quoteTimer.Stop();
                 try
                 {
                     var jss = new JavaScriptSerializer();
                     WebClient client = new WebClient();
                     client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-                    Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/ticker.do?symbol=btc_cny");
-                    StreamReader reader = new StreamReader(data);
-                    string s = reader.ReadToEnd();
-                    var dict = jss.Deserialize<dynamic>(s);
-                    var last = double.Parse(dict["ticker"]["last"]);
-                    data.Close();
-                    reader.Close();
+                    var last = 0.0;
+                    var progress = 0.5;
+                    using (Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/ticker.do?symbol=btc_cny"))
+                    {
+                        using(StreamReader reader = new StreamReader(data))
+                        {
+                            string s = reader.ReadToEnd();
+                            var dict = jss.Deserialize<dynamic>(s);
+                            last = double.Parse(dict["ticker"]["last"]);
+                        }
+                    }
+                    using (Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/depth.do?symbol=btc_cny"))
+                    {
+                        using (StreamReader reader = new StreamReader(data))
+                        {
+                            string s = reader.ReadToEnd();
+                            var dict = jss.Deserialize<dynamic>(s);
+                            var ask = 0.0;
+                            var bid = 0.0;
+                            foreach (var i in dict["asks"])
+                                ask -= Math.Log(((double)i[0] - last + 0.001) * 0.001) * (double)i[1];
+                            foreach (var i in dict["bids"])
+                                bid -= Math.Log((-(double)i[0] + last + 0.001) * 0.001) * (double)i[1];
+                            if(ask + bid != 0)
+                                progress = bid / (ask + bid);
+                        }
+                    }
                     tbPrice.Dispatcher.Invoke(() =>
                     {
+                        var stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[2];
+                        var powerAnim = new DoubleAnimation();
+                        powerAnim.Duration = new TimeSpan(0, 0, 1);
+                        if(!double.IsNaN(progress))
+                            powerAnim.To = progress;
+                        (bdAskPower.Background as LinearGradientBrush).GradientStops[2].BeginAnimation(GradientStop.OffsetProperty, powerAnim);
+
+                        stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[4];
+                        powerAnim = new DoubleAnimation();
+                        powerAnim.Duration = new TimeSpan(0, 0, 1);
+                        powerAnim.To = 0.45;
+                        if (!double.IsNaN(progress))
+                            powerAnim.To = progress - 0.05;
+                        if (powerAnim.To < 0)
+                            powerAnim.To = 0;
+                        (bdAskPower.Background as LinearGradientBrush).GradientStops[4].BeginAnimation(GradientStop.OffsetProperty, powerAnim);
+
+                        stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[3];
+                        powerAnim = new DoubleAnimation();
+                        powerAnim.Duration = new TimeSpan(0, 0, 1);
+                        powerAnim.To = 0.55;
+                        if (!double.IsNaN(progress))
+                            powerAnim.To = progress + 0.05;
+                        if (powerAnim.To > 1)
+                            powerAnim.To = 1;
+                        (bdAskPower.Background as LinearGradientBrush).GradientStops[3].BeginAnimation(GradientStop.OffsetProperty, powerAnim);
+
+                        var borderAnim = new ColorAnimation();
+                        if (last > ContainerTB.Width)
+                            borderAnim.To = Color.FromArgb(255, 137, 249, 96);
+                        else if (last < ContainerTB.Width)
+                            borderAnim.To = Color.FromArgb(255, 255, 65, 65);
+                        else
+                            borderAnim.To = Colors.CadetBlue;
+                        borderAnim.Duration = TimeSpan.FromMilliseconds(300);
+                        (bdFlag.BorderBrush as SolidColorBrush).BeginAnimation(SolidColorBrush.ColorProperty, borderAnim);
                         var priceAnim = new DoubleAnimation();
                         priceAnim.To = last;
                         priceAnim.Duration = new TimeSpan(0, 0, 1);
@@ -77,6 +134,7 @@ namespace OkMonitor
                 }
                 catch
                 { }
+                quoteTimer.Start();
             };
             quoteTimer.Start();
         }
