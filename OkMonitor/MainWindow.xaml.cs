@@ -38,6 +38,17 @@ namespace OkMonitor
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            for(int i =0;i<30;i++)
+            {
+                var bd = new Border();
+                bd.Width = 4;
+                bd.Height = 0;
+                bd.Background = new SolidColorBrush(Colors.White);
+                bd.BorderBrush = null;
+                bd.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+                bd.Opacity = 0.7;
+                spTrade.Children.Add(bd);
+            }
             var tmpTB = new TextBlock();
             ContainerTB = tmpTB;
             ContainerTB.Width = 0;
@@ -57,6 +68,7 @@ namespace OkMonitor
                     client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
                     var last = 0.0;
                     var progress = 0.5;
+                    dynamic trades = null;
                     using (Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/ticker.do?symbol=btc_cny"))
                     {
                         using(StreamReader reader = new StreamReader(data))
@@ -82,8 +94,40 @@ namespace OkMonitor
                                 progress = bid / (ask + bid);
                         }
                     }
+
+                    using (Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/kline.do?symbol=btc_cny&type=1min&size=30"))
+                    {
+                        using (StreamReader reader = new StreamReader(data))
+                        {
+                            string s = reader.ReadToEnd();
+                            trades = jss.Deserialize<dynamic>(s);
+                        }
+                    }
                     tbPrice.Dispatcher.Invoke(() =>
                     {
+                        if(trades != null)
+                        {
+                            var j = 0;
+                            var max = 0.0;
+                            foreach (var i in trades)
+                            {
+                                if ((double)i[5] > max)
+                                    max = (double)i[5];
+                            }
+                            if (max == 0)
+                                max = 20;
+                            foreach (var i in trades)
+                            {
+                                var bd = spTrade.Children[j] as Border;
+                                if ((double)i[4] >= (double)i[1])
+                                    (bd.Background as SolidColorBrush).Color = Colors.DodgerBlue;
+                                else
+                                    (bd.Background as SolidColorBrush).Color = Colors.Crimson;
+                                
+                                bd.Height = (double)i[5] / max * 20;
+                                j++;
+                            }
+                        }
                         var stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[2];
                         var powerAnim = new DoubleAnimation();
                         powerAnim.Duration = TimeSpan.FromMilliseconds(1000);

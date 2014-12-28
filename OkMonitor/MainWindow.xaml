@@ -16,13 +16,12 @@
                     </LinearGradientBrush>
                 </Border.Background>
             </Border>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Height="12">
-
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Height="20" HorizontalAlignment="Center" Name="spTrade">
             </StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock x:Name="tbPrice" TextWrapping="Wrap" Text="0.00" 
                    FontSize="24"/>
-                <TextBlock  TextWrapping="Wrap" Text="￥" 
+                <TextBlock  TextWrapping="Wrap" Text="￥"
                    FontSize="24"/>
             </StackPanel>
         </Grid>
