@@ -78,7 +78,7 @@ namespace OkMonitor
                             last = double.Parse(dict["ticker"]["last"]);
                         }
                     }
-                    using (Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/depth.do?symbol=btc_cny"))
+                    using (Stream data = client.OpenRead("https://www.okcoin.cn/api/v1/depth.do?symbol=btc_cny&size=100"))
                     {
                         using (StreamReader reader = new StreamReader(data))
                         {
