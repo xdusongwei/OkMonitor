@@ -4,18 +4,21 @@
         Title="OkMonitor" Height="48" Width="132" Loaded="Window_Loaded" AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize" MouseDown="Window_MouseDown" 
         ShowInTaskbar="False" Topmost="True" Background="Transparent" MouseDoubleClick="Window_MouseDoubleClick" WindowStartupLocation="CenterScreen">
     <Border BorderThickness="3" BorderBrush="#FF258F14" Name="bdFlag" CornerRadius="2">
-    <Grid>
+        <Grid>
             <Border HorizontalAlignment="Stretch" Name="bdAskPower" CornerRadius="0">
-            <Border.Background>
-                <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
-                    <GradientStop Color="#E50CFF00" Offset="0"/>
-                    <GradientStop Color="#E5FF4141" Offset="1"/>
-                    <GradientStop Color="Yellow" Offset="0.503"/>
-                    <GradientStop Color="#FFECAE42" Offset="0.543"/>
-                    <GradientStop Color="#FF89F960" Offset="0.45"/>
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
+                        <GradientStop Color="#E568FF60"/>
+                        <GradientStop Color="#FFA6FF86" Offset="0.457"/>
+                        <GradientStop Color="Yellow" Offset="0.497"/>
+                        <GradientStop Color="#FFFFD68E" Offset="0.55"/>
+                        <GradientStop Color="#E5F96C6C" Offset="1"/>
                     </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+                </Border.Background>
+            </Border>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Height="12">
+
+            </StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock x:Name="tbPrice" TextWrapping="Wrap" Text="0.00" 
                    FontSize="24"/>

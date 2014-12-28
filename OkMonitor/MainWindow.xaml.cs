@@ -31,12 +31,6 @@ namespace OkMonitor
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
-
-        }
-
         private TextBlock ContainerTB
         {
             get;
@@ -92,24 +86,30 @@ namespace OkMonitor
                     {
                         var stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[2];
                         var powerAnim = new DoubleAnimation();
-                        powerAnim.Duration = new TimeSpan(0, 0, 1);
+                        powerAnim.Duration = TimeSpan.FromMilliseconds(1000);
                         if(!double.IsNaN(progress))
                             powerAnim.To = progress;
                         (bdAskPower.Background as LinearGradientBrush).GradientStops[2].BeginAnimation(GradientStop.OffsetProperty, powerAnim);
 
-                        stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[4];
+                        stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[1];
                         powerAnim = new DoubleAnimation();
-                        powerAnim.Duration = new TimeSpan(0, 0, 1);
+                        if (progress < 0.5)
+                            powerAnim.Duration = TimeSpan.FromMilliseconds(100);
+                        else
+                            powerAnim.Duration = new TimeSpan(0, 0, 1);
                         powerAnim.To = 0.45;
                         if (!double.IsNaN(progress))
                             powerAnim.To = progress - 0.05;
                         if (powerAnim.To < 0)
                             powerAnim.To = 0;
-                        (bdAskPower.Background as LinearGradientBrush).GradientStops[4].BeginAnimation(GradientStop.OffsetProperty, powerAnim);
+                        (bdAskPower.Background as LinearGradientBrush).GradientStops[1].BeginAnimation(GradientStop.OffsetProperty, powerAnim);
 
                         stop = (bdAskPower.Background as LinearGradientBrush).GradientStops[3];
                         powerAnim = new DoubleAnimation();
-                        powerAnim.Duration = new TimeSpan(0, 0, 1);
+                        if (progress > 0.5)
+                            powerAnim.Duration = TimeSpan.FromMilliseconds(100);
+                        else
+                            powerAnim.Duration = new TimeSpan(0, 0, 1);
                         powerAnim.To = 0.55;
                         if (!double.IsNaN(progress))
                             powerAnim.To = progress + 0.05;
