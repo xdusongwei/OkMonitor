@@ -8,11 +8,11 @@
             <Border HorizontalAlignment="Stretch" Name="bdAskPower" CornerRadius="0">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
-                        <GradientStop Color="#E568FF60"/>
-                        <GradientStop Color="#FFA6FF86" Offset="0.457"/>
+                        <GradientStop Color="#B2B8FFB5"/>
+                        <GradientStop Color="#FFB1FF95" Offset="0.457"/>
                         <GradientStop Color="Yellow" Offset="0.497"/>
-                        <GradientStop Color="#FFFFD68E" Offset="0.55"/>
-                        <GradientStop Color="#E5F96C6C" Offset="1"/>
+                        <GradientStop Color="#FFFFD893" Offset="0.55"/>
+                        <GradientStop Color="#B2FFB6B6" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
             </Border>
